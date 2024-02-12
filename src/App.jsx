@@ -1,27 +1,18 @@
-import { useEffect, useState } from "react";
 import "./App";
 import axios from "axios";
 import Swal from "sweetalert2";
 const App = () => {
-  const [user, setUser] = useState();
 
   const token = localStorage.getItem("token");
   const LoggedUser = localStorage.getItem("user");
 
-  console.log(token,LoggedUser)
-
+  console.log(token, LoggedUser);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const userName = e.target[0].value;
     const password = e.target[1].value;
     const user = { userName, password };
-
-    setUser(user);
-  };
-
-  useEffect(() => {
-    console.log(user);
     axios
       .post("https://restaurantapi.bssoln.com/api/Auth/SignIn", user)
       .then((res) => {
@@ -40,7 +31,7 @@ const App = () => {
         }
       })
       .catch((err) => console.log(err));
-  }, [user]);
+  };
 
   // if(token){
   //   console.log(token)
