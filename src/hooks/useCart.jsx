@@ -1,53 +1,54 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import Button from "@mui/material/Button";
-import List from "@mui/material/List";
+import { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+// import Drawer from "@material-ui/core/Drawer";
+// import Button from "@material-ui/core/Button";
+// import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+// import { Typography } from "@mui/material";
 
-export default function useCart() {
-  const [state, setState] = React.useState({
-    right: false,
-  });
+const useStyles = makeStyles({
+  drawerPaper: {
+    width: 250,
+    marginTop: 70,
+  },
+});
 
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (
-      event &&
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
-    }
+const useCart = () => {
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+  const [cartLength, setCartLength] = useState(0);
 
-    setState({ ...state, [anchor]: open });
+  useEffect(() => {
+    const updateCartLength = () => {
+      const cartData = JSON.parse(localStorage.getItem("cartData"));
+      setCartLength(cartData ? cartData.length : 0);
+    };
+
+    updateCartLength();
+
+    window.addEventListener("storage", updateCartLength);
+
+    // Cleanup function to remove event listener
+    return () => {
+      window.removeEventListener("storage", updateCartLength);
+    };
+  }, []); // Empty dependency array ensures this effect runs only once
+
+  const handleToggle = () => {
+    setOpen(!open);
   };
 
-  const list = (anchor) => (
-    <Box
-      sx={{ width: 350,  }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <List>kjhsads</List>
-    </Box>
-  );
+  // Function to manually update cart length
+  // const updateCartLengthManually = (length) => {
+  //   setCartLength(length);
+  //   console.log(length)
+  // }
 
-  return (
-    <div>
-      {["right"].map((anchor) => (
-        <React.Fragment key={anchor}>
-          <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
-          <SwipeableDrawer
-            anchor={anchor}
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
-            onOpen={toggleDrawer(anchor, true)}
-            sx={{ marginTop: '50px' }} // Add margin top here
-          >
-            {list(anchor)}
-          </SwipeableDrawer>
-        </React.Fragment>
-      ))}
-    </div>
-  );
-}
+  return {
+    open,
+    cartLength,
+    handleToggle,
+    classes
+  };
+};
+
+export default useCart;

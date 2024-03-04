@@ -9,7 +9,8 @@ import useTable from "../hooks/useTable.jsx";
 import CheckCard from "./Card.jsx";
 import Button from "@mui/material/Button";
 import NewReleasesIcon from "@mui/icons-material/NewReleases";
-
+import useCart from "../hooks/useCart.jsx";
+import CartComponent from "./CartComponent.jsx";
 
 const OrderList = () => {
   const [menuData, setMenuData] = useState([]);
@@ -21,17 +22,18 @@ const OrderList = () => {
   const [localCartData, setLocalCartData] = useState([]);
   localStorage.setItem("cartLength", localCartData?.length);
 
+  // const { updateCartLengthManually } = useCart();
+
   useEffect(() => {
     const cartData = localStorage.getItem("cartData");
     setLocalCartData(JSON.parse(cartData));
   }, []);
 
-
-
   const handleCheckChange = (id) => {
     setCheckedCard(id === checkedCard ? null : id);
     localStorage.removeItem("cartData");
     setLocalCartData([]);
+    // updateCartLengthManually(0);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -106,8 +108,10 @@ const OrderList = () => {
     const updatedData = JSON.stringify(existingData);
 
     localStorage.setItem("cartData", updatedData);
-
+    <CartComponent data={existingData?.length}></CartComponent>
+    // updateCartLengthManually(existingData?.length);
     setLocalCartData(existingData);
+
 
     console.log("Cart updated with new data:", newData);
   };
@@ -118,6 +122,7 @@ const OrderList = () => {
   return (
     <>
       <Paper className="mainPaperStyle">
+        
         <div className="page-top">
           <div>
             <span className="under-line page-title">Order Food</span>

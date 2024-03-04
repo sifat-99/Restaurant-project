@@ -26,7 +26,8 @@ import "../styles/Dashboard.css";
 import UseLoader from "../components/loader/UseLoader.jsx";
 import { useState, useEffect } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import useCart from "../hooks/useCart.jsx";
+import CartComponent from "../components/CartComponent.jsx";
+// import useCart from "../hooks/useCart.jsx";
 // import useCart from "../hooks/useCart.jsx";
 
 const drawerWidth = 255.5;
@@ -80,7 +81,7 @@ export default function Dashboard() {
   const [open, setOpen] = useState(true);
   const [loader, showLoader, hideLoader] = UseLoader();
   const [activeItem, setActiveItem] = useState(null);
-  const cart = useCart();
+  // const cart = useCart();
 
   const isScreenSmall = useMediaQuery("(max-width:1280px)");
 
@@ -111,7 +112,7 @@ export default function Dashboard() {
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
           <AppBar position="fixed" open={open}>
-            <Toolbar sx={{ background: "#CC080B" }}>
+            <Toolbar sx={{ background: "#CC080B"}}>
               <div className="appBar-logo-container">
                 <img
                   src="../src/assets/logo.png"
@@ -124,7 +125,7 @@ export default function Dashboard() {
               <Button className="appBarAdmin">Admin</Button>
 
               <Button>
-                <div className="relative">{cart}</div>
+                <div className="relative"><CartComponent></CartComponent></div>
               </Button>
 
               <IconButton

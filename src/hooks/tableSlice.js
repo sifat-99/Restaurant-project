@@ -44,4 +44,8 @@ export const deleteDataEntry = (id) => (dispatch) => {
         });
 };
 
+export const updateCartLengthManually = (length) => (dispatch) => {
+    dispatch(setData(length));
+};
+
 export default tableSlice.reducer;
