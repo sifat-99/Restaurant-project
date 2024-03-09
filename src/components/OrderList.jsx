@@ -9,8 +9,8 @@ import useTable from "../hooks/useTable.jsx";
 import CheckCard from "./Card.jsx";
 import Button from "@mui/material/Button";
 import NewReleasesIcon from "@mui/icons-material/NewReleases";
-import useCart from "../hooks/useCart.jsx";
-import CartComponent from "./CartComponent.jsx";
+import { addItem, clearCart, selectCart } from "../hooks/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const OrderList = () => {
   const [menuData, setMenuData] = useState([]);
@@ -19,22 +19,20 @@ const OrderList = () => {
   const loader = useRef(null);
   const { data: table } = useTable(0, 10);
   const [checkedCard, setCheckedCard] = useState(null);
-  const [localCartData, setLocalCartData] = useState([]);
-  localStorage.setItem("cartLength", localCartData?.length);
-
-  // const { updateCartLengthManually } = useCart();
-
-  useEffect(() => {
-    const cartData = localStorage.getItem("cartData");
-    setLocalCartData(JSON.parse(cartData));
-  }, []);
+  const dispatch = useDispatch();
+  const cartItems = useSelector(selectCart);
+  // console.log(cartItems);
 
   const handleCheckChange = (id) => {
     setCheckedCard(id === checkedCard ? null : id);
-    localStorage.removeItem("cartData");
-    setLocalCartData([]);
-    // updateCartLengthManually(0);
+
+    dispatch(clearCart());
   };
+  useEffect(() => {
+    if (checkedCard) {
+      dispatch(clearCart());
+    }
+  }, [checkedCard]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -90,10 +88,8 @@ const OrderList = () => {
   };
 
   const handleAddToCard = (newData) => {
-    let existingData = localStorage.getItem("cartData");
-    if (existingData) {
-      existingData = JSON.parse(existingData);
-      const isItemAlreadyInCart = existingData.some(
+    if (cartItems) {
+      const isItemAlreadyInCart = cartItems.some(
         (item) => item.id === newData.id
       );
       if (isItemAlreadyInCart) {
@@ -101,28 +97,14 @@ const OrderList = () => {
         return;
       }
     } else {
-      existingData = [];
+      console.log("Cart is empty");
     }
-    existingData.push(newData);
-
-    const updatedData = JSON.stringify(existingData);
-
-    localStorage.setItem("cartData", updatedData);
-    <CartComponent data={existingData?.length}></CartComponent>
-    // updateCartLengthManually(existingData?.length);
-    setLocalCartData(existingData);
-
-
-    console.log("Cart updated with new data:", newData);
+    dispatch(addItem(newData));
   };
-  const localCard = localStorage.getItem("cartData");
-  const parsedCartData = JSON.parse(localCard);
 
-  console.log(parsedCartData);
   return (
     <>
       <Paper className="mainPaperStyle">
-        
         <div className="page-top">
           <div>
             <span className="under-line page-title">Order Food</span>
@@ -254,7 +236,7 @@ const OrderList = () => {
                                       <Button
                                         variant="contained"
                                         style={{
-                                          backgroundColor: localCartData?.some(
+                                          backgroundColor: cartItems?.some(
                                             (item) => item.id === menuItem.id
                                           )
                                             ? "green"
@@ -285,7 +267,7 @@ const OrderList = () => {
                                     <Button
                                       variant="contained"
                                       style={{
-                                        backgroundColor: localCartData?.some(
+                                        backgroundColor: cartItems?.some(
                                           (item) => item.id === menuItem.id
                                         )
                                           ? "green"

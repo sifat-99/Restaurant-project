@@ -1,5 +1,6 @@
-import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
+/* eslint-disable react-hooks/rules-of-hooks */
+// import * as React from "react";
+import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -27,8 +28,7 @@ import UseLoader from "../components/loader/UseLoader.jsx";
 import { useState, useEffect } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import CartComponent from "../components/CartComponent.jsx";
-// import useCart from "../hooks/useCart.jsx";
-// import useCart from "../hooks/useCart.jsx";
+
 
 const drawerWidth = 255.5;
 
@@ -77,14 +77,10 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function Dashboard() {
-  //   const theme = useTheme();
   const [open, setOpen] = useState(true);
   const [loader, showLoader, hideLoader] = UseLoader();
   const [activeItem, setActiveItem] = useState(null);
-  // const cart = useCart();
-
   const isScreenSmall = useMediaQuery("(max-width:1280px)");
-
   useEffect(() => {
     setOpen(!isScreenSmall);
   }, [isScreenSmall]);
@@ -111,7 +107,7 @@ export default function Dashboard() {
       <div>
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <AppBar position="fixed" open={open}>
+          <AppBar position="fixed" open={open} style={{zIndex:9999999}}>
             <Toolbar sx={{ background: "#CC080B"}}>
               <div className="appBar-logo-container">
                 <img
@@ -149,6 +145,7 @@ export default function Dashboard() {
                 width: drawerWidth,
                 boxSizing: "border-box",
               },
+              zIndex:99999999
             }}
             variant="persistent"
             anchor="left"
@@ -160,7 +157,7 @@ export default function Dashboard() {
             <Divider />
 
             <Box
-              sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+              sx={{ display: "flex", flexDirection: "column", height: "100%", }}
             >
               <List>
                 <Box sx={{ padding: "0px 8px" }}>
