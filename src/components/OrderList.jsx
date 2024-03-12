@@ -9,7 +9,7 @@ import useTable from "../hooks/useTable.jsx";
 import CheckCard from "./Card.jsx";
 import Button from "@mui/material/Button";
 import NewReleasesIcon from "@mui/icons-material/NewReleases";
-import { addItem, clearCart, selectCart } from "../hooks/cartSlice";
+import {  addItem, clearCart, selectCart,setTableId } from "../hooks/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const OrderList = () => {
@@ -21,11 +21,11 @@ const OrderList = () => {
   const [checkedCard, setCheckedCard] = useState(null);
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCart);
-  // console.log(cartItems);
+
+
 
   const handleCheckChange = (id) => {
     setCheckedCard(id === checkedCard ? null : id);
-
     dispatch(clearCart());
   };
   useEffect(() => {
@@ -89,7 +89,7 @@ const OrderList = () => {
 
   const handleAddToCard = (newData) => {
     if (cartItems) {
-      const isItemAlreadyInCart = cartItems.some(
+      const isItemAlreadyInCart = cartItems.items.some(
         (item) => item.id === newData.id
       );
       if (isItemAlreadyInCart) {
@@ -99,8 +99,22 @@ const OrderList = () => {
     } else {
       console.log("Cart is empty");
     }
-    dispatch(addItem(newData));
+    const data ={
+      id: newData.id,
+      name: newData.name,
+      price: newData.price,
+      discountPrice: newData.discountPrice,
+      image: newData.image,
+      description: newData.description,
+      quantity: 1,
+    }
+    console.log(data)
+    dispatch(addItem(data));
   };
+  dispatch(setTableId(checkedCard));
+
+
+  console.log(cartItems)
 
   return (
     <>
@@ -109,36 +123,40 @@ const OrderList = () => {
           <div>
             <span className="under-line page-title">Order Food</span>
           </div>
-          <div>{/* Search container here */}</div>
+          {/* <div>Search container here</div> */}
         </div>
         <Container maxWidth="xl">
           <Grid container spacing={2}>
             <Grid item xs={3} className="relative">
-              <div className="absolute top-4 bg-white text-black border-2 border-red-500 w-[88%] lg:w-[96%] p-2">
-                SELECT FOODS {menuData.length}
+              <div className="absolute top-4 bg-white text-black border-2 text-center font-bold border-red-500 w-[88%] lg:w-[96%] p-2">
+                SELECT A TABLE ({table.length})
               </div>
-              <Card
-                style={{
-                  height: "75vh",
-                  overflowY: "auto",
-                  padding: "10px",
-                  scrollbarWidth: "thin",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "20px",
-                  paddingTop: "50px",
-                }}
-              >
-                {table.slice(0, 3).map((menuItem, index) => (
-                  <CheckCard
-                    key={index}
-                    menuItem={menuItem}
-                    menuImage={menuItem.image}
-                    checked={menuItem.id === checkedCard}
-                    onChange={handleCheckChange}
-                  />
-                ))}
-              </Card>
+              <div style={{ maxHeight: "75vh", overflowY: "scroll" }}>
+                <Card
+                  style={{
+                    padding: "10px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "20px",
+                    paddingTop: "50px",
+                  }}
+                >
+                  {table.map(
+                    (
+                      menuItem,
+                      index // Render only visible cards
+                    ) => (
+                      <CheckCard
+                        key={index}
+                        menuItem={menuItem}
+                        menuImage={menuItem.image}
+                        checked={menuItem.id === checkedCard}
+                        onChange={handleCheckChange}
+                      />
+                    )
+                  )}
+                </Card>
+              </div>
             </Grid>
             {checkedCard ? (
               <Grid item xs={9}>
@@ -236,7 +254,7 @@ const OrderList = () => {
                                       <Button
                                         variant="contained"
                                         style={{
-                                          backgroundColor: cartItems?.some(
+                                          backgroundColor: cartItems?.items.some(
                                             (item) => item.id === menuItem.id
                                           )
                                             ? "green"
@@ -267,7 +285,7 @@ const OrderList = () => {
                                     <Button
                                       variant="contained"
                                       style={{
-                                        backgroundColor: cartItems?.some(
+                                        backgroundColor: cartItems?.items.some(
                                           (item) => item.id === menuItem.id
                                         )
                                           ? "green"
