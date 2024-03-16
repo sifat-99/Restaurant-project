@@ -1,8 +1,7 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-
-import { Provider } from "react-redux"; // Import Provider from react-redux
-import store from "./components/App/store"; // Import your Redux store
+import { Provider } from "react-redux";
+import store from "./components/App/store";
 import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import routes from "./Routes/Routes";

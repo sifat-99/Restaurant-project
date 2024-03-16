@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
 import { Grid, TextField, Paper, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import Swal from 'sweetalert2';
 import ApiCall from '../components/apiCollection/ApiCall';
@@ -10,10 +11,11 @@ import { DiscountType } from './utils/utils'
 import DefaultAdminImage from '../assets/img/defaultImg.png'
 
 const AddNewFood = () => {
-    const [discountPrice, setSetDiscountPrice] = useState(0);
+    const [discountPrice, setDiscountPrice] = useState(0);
     const [loader, showLoader, hideLoader] = UseLoader();
     const navigate = useNavigate();
     const hiddenFileInput = useRef(null);
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -32,16 +34,16 @@ const AddNewFood = () => {
     const calculateDiscountPrice = () => {
         // Calculate the discount price here
         const discount = formData.discountType === DiscountType.Percent
-            ? +formData.price * (formData.discount ? 1 : formData.discount / 100)
-            : formData.discountType === DiscountType.Flat ?
-                formData.discount :
-                0;
-        setSetDiscountPrice(formData.price - discount);
+            ? formData.price - ((formData.price * formData.discount) /100)
+            : (formData.discountType === DiscountType.Flat
+                ? formData.price - formData.discount
+                : 0
+            );
+        setDiscountPrice(discount);
     };
 
-    const handleChange = (e) => {
+    const imageChange = (e) => {
         const { name, value } = e.target;
-
         if (name === 'image') {
             const file = e.target.files[0];
             const reader = new FileReader();
@@ -50,23 +52,22 @@ const AddNewFood = () => {
                 setFormData({ ...formData, [name]: value, base64: reader.result });
             };
         }
-        else if (name === 'discountType') {
-            if (value !== DiscountType.None) {
-                calculateDiscountPrice();
-                setFormData({ ...formData, discountType: value, discount: formData.discount, discountPrice: discountPrice });
-                console.log(discountPrice);
-            }
-        }
-        else {
-            setFormData({ ...formData, [name]: value });
+    }
 
-        }
+    const discountTypeChange = (e) => {
+        const { name, value } = e.target;
+        calculateDiscountPrice();
+        setFormData({ ...formData, discountType: value, discount: formData.discount, discountPrice: discountPrice });
+    }
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
-    async function handleSubmit(e) {
+    const onSubmit = async () => {
         showLoader();
-        e.preventDefault();
+
         try {
             const response = await axios.post(`${ApiCall.baseUrl}Food/create`, formData);
 
@@ -84,7 +85,9 @@ const AddNewFood = () => {
             });
         }
     };
-
+    useEffect(() => {
+        calculateDiscountPrice();
+    }, [formData])
     return (
         <>
             <Paper className='mainPaperStyle'>
@@ -93,11 +96,11 @@ const AddNewFood = () => {
                         <span style={{ paddingBottom: 50 }} className=' page-title'>Add Food</span>
                     </div>
                 </div>
-                <div className='mainTableContainer' style={{ padding: 40 }}>
-                    <form onSubmit={handleSubmit}>
+                <div className='mainTableContainer customPadding'>
+                    <form onSubmit={handleSubmit(onSubmit)}>
                         <Grid container spacing={2} sx={{ paddingTop: '20px' }}>
                             {/* First Row */}
-                            <Grid item xs={8}>
+                            <Grid item xs={12} sm={8}>
                                 <Grid container spacing={2}>
                                     <Grid item xs={12}>
                                         <TextField
@@ -105,8 +108,10 @@ const AddNewFood = () => {
                                             label="Food Name"
                                             name="name"
                                             value={formData.name}
-                                            onChange={handleChange}
-                                            required
+                                            onInput={handleChange}
+                                            error={!!errors.name}
+                                            helperText={errors.name && errors.name.message}
+                                            {...register('name', { required: 'Food Name is required' })}
 
                                         />
                                     </Grid>
@@ -117,10 +122,14 @@ const AddNewFood = () => {
                                             label="Description"
                                             name="description"
                                             value={formData.description}
-                                            onChange={handleChange}
+
                                             multiline
                                             rows={5}
-                                            required
+                                            onInput={handleChange}
+                                            error={!!errors.description}
+                                            helperText={errors.name && errors.description.message}
+                                            {...register('description', { required: 'Description is required' })}
+
                                         />
                                     </Grid>
 
@@ -128,35 +137,40 @@ const AddNewFood = () => {
                             </Grid>
 
                             {/* Image Picker */}
-                            <Grid item xs={4}>
+                            <Grid item xs={12} sm={4}>
                                 <div onClick={handleClick} className='image-picker-container'>
                                     {
                                         formData.base64 ?
                                             <img src={formData.base64} alt="Uploaded" className='image-style' />
-                                            :<img src={DefaultAdminImage} alt="Default" className='image-style' />
+                                            : <img src={DefaultAdminImage} alt="Default" className='image-style' />
                                     }
-                                    <input style={{ display: 'none' }} type="file" accept="image/*" name="image" onChange={handleChange} ref={hiddenFileInput} />
+                                    <input style={{ display: 'none' }} type="file" accept="image/*" name="image" onChange={imageChange} ref={hiddenFileInput} />
                                 </div>
                             </Grid>
 
                             {/* Fourth Row */}
-                            <Grid item xs={3} >
+                            <Grid item xs={12} sm={3}>
                                 <TextField
                                     fullWidth
-                                   
+
                                     label="Price"
                                     name="price"
                                     value={formData.price}
-                                    onChange={handleChange}
+
                                     type='number'
+                                    onInput={handleChange}
+                                    
+                                    error={!!errors.price}
+                                    helperText={errors.price && errors.price.message}
+                                    {...register('price', { required: 'Price is required' })}
                                 />
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} sm={3}>
                                 <FormControl fullWidth>
                                     <InputLabel >Select Discount Type</InputLabel>
                                     <Select
                                         value={formData.discountType}
-                                        onChange={handleChange}
+                                        onChange={discountTypeChange}
                                         name="discountType"
                                         required
                                         label="Select Discount Type"
@@ -167,7 +181,7 @@ const AddNewFood = () => {
                                     </Select>
                                 </FormControl>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={12} sm={3}>
                                 <TextField
                                     fullWidth
                                     label={formData.discountType === DiscountType.Percent ? "Discount in (%)" : "Discount in (৳)"}
@@ -178,12 +192,12 @@ const AddNewFood = () => {
                                     type='number'
                                 />
                             </Grid>
-                            <Grid item xs={3} >
+                            <Grid item xs={12} sm={3}>
                                 <TextField
                                     fullWidth
                                     label="Discount Price"
                                     name="discountPrice"
-                                    value={formData.discountPrice}
+                                    value={discountPrice}
                                     disabled={formData.discountType === DiscountType.None ? true : false}
                                     type='number'
                                 />

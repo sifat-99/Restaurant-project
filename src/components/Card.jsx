@@ -50,4 +50,3 @@ CheckCard.propTypes = {
   checked: PropTypes.bool,
   onChange: PropTypes.func,
 };
-//                   }}

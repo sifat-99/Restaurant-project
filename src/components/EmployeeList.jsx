@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -74,7 +74,7 @@ export default function EmployeeList() {
         };
         fetchData();
 
-    }, [rowsPerPage]);
+    }, [page, rowsPerPage]);
 
 
 
@@ -85,11 +85,12 @@ export default function EmployeeList() {
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
-       
+
     };
 
     return (
         <>
+
             <Paper className='mainPaperStyle'>
                 <div className='page-top'>
                     <div>
@@ -101,13 +102,14 @@ export default function EmployeeList() {
                         </Link>
                     </div>
                 </div>
+
                 <div className='mainTableContainer'>
                     <TableContainer className='tableContainerStyle'>
                         <Table stickyHeader aria-label="sticky table">
-                            <TableHead >
-                                <TableRow>
+                            <TableHead className='textWidth' >
+                                <TableRow >
                                     {columns.map((column) => (
-                                        <TableCell key={column.id} className='tableHeaderText' style={{ minWidth: column.minWidth }}>
+                                        <TableCell key={column.id} className={column.id === "image" ? 'tableHeaderText ellipsText imgWidth' : 'tableHeaderText ellipsText textWidth'} style={{ minWidth: column.minWidth }}>
                                             {column.label}
                                         </TableCell>
                                     ))}
@@ -116,47 +118,45 @@ export default function EmployeeList() {
 
                             <TableBody>
                                 {(
-                                    rows
-                                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                                        .map((row, rowIndex) => (
-                                            <TableRow key={rowIndex}>
-                                                <TableCell align="left" className='tableBodyText'>
-                                                    <ListItemAvatar>
-                                                        <Avatar alt="Admin Image" src={!row?.user?.image ? DefaultAdminImage : `${ApiCall.getImage}${row?.user?.image}`} />
-                                                    </ListItemAvatar>
-                                                </TableCell>
-                                                <TableCell align="left" className='tableBodyText' sx={{ display: 'flex', justifyContent: "space-between", alignItems: 'center' }} >
-                                                    <div>{row?.user?.fullName}</div>
-                                                    <div>
-                                                        <IconButton aria-label="star" onClick={() => setStarColor(!starColor)}>
-                                                            {starColor ? <StarsIcon style={{ color: "#F9A825" }} /> : <StarsIcon style={{ color: "#BDBDBD" }} />}
-                                                        </IconButton>
-                                                    </div>
-                                                </TableCell>
-                                                <TableCell align="left" className='tableBodyText'>
-                                                    {row?.user?.email}
-                                                </TableCell>
-                                                <TableCell align="left" className='tableBodyText'>
-                                                    {row?.user?.phoneNumber}
-                                                </TableCell>
-                                                <TableCell align="left" className='tableBodyText'>
-                                                    {row?.joinDate}
-                                                </TableCell>
-                                                <TableCell align="left" className='tableBodyText'>
-                                                    {row?.designation}
-                                                </TableCell>
-                                                <TableCell align="left" className='tableBodyText'>
-                                                    <div>
-                                                        <IconButton aria-label="edit">
-                                                            <EditNoteIcon className='editButtonStyle' />
-                                                        </IconButton>
-                                                        <IconButton aria-label="delete" onClick={() => handleDelete(row?.id)}>
-                                                            <DeleteIcon className='deleteButtonStyle' />
-                                                        </IconButton>
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
+                                    rows.map((row, rowIndex) => (
+                                        <TableRow key={rowIndex}>
+                                            <TableCell align="left" className='tableBodyText'>
+                                                <ListItemAvatar>
+                                                    <Avatar alt="Admin Image" src={!row?.user?.image ? DefaultAdminImage : `${ApiCall.getImage}${row?.user?.image}`} />
+                                                </ListItemAvatar>
+                                            </TableCell>
+                                            <TableCell align="left" className='tableBodyText ' sx={{ display: 'flex', justifyContent: "space-between", alignItems: 'center' }} >
+                                                <div className='ellipsText'>{row?.user?.fullName}</div>
+                                                <div>
+                                                    <IconButton aria-label="star" onClick={() => setStarColor(!starColor)}>
+                                                        {starColor ? <StarsIcon style={{ color: "#F9A825" }} /> : <StarsIcon style={{ color: "#BDBDBD" }} />}
+                                                    </IconButton>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell align="left" className='tableBodyText ellipsText'>
+                                                {row?.user?.email}
+                                            </TableCell>
+                                            <TableCell align="left" className='tableBodyText ellipsText'>
+                                                {row?.user?.phoneNumber}
+                                            </TableCell>
+                                            <TableCell align="left" className='tableBodyText ellipsText'>
+                                                {row?.joinDate}
+                                            </TableCell>
+                                            <TableCell align="left" className='tableBodyText ellipsText'>
+                                                {row?.designation}
+                                            </TableCell>
+                                            <TableCell align="left" className='tableBodyText'>
+                                                <div>
+                                                    <IconButton aria-label="edit">
+                                                        <EditNoteIcon className='editButtonStyle' />
+                                                    </IconButton>
+                                                    <IconButton aria-label="delete" onClick={() => handleDelete(row?.id)}>
+                                                        <DeleteIcon className='deleteButtonStyle' />
+                                                    </IconButton>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
                                 )}
                             </TableBody>
                         </Table>
@@ -164,12 +164,13 @@ export default function EmployeeList() {
                     <TablePagination
                         rowsPerPageOptions={[10, 25, 50, 100, { value: totalData, label: 'All' }]}
                         component="div"
-                        count={rows.length}
+                        count={totalData}
                         rowsPerPage={rowsPerPage}
                         page={page}
                         onPageChange={handleChangePage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                         labelRowsPerPage={"Items per page: "}
+
                         classes={{
                             input: 'MuiTablePagination-input',
                             select: 'MuiTablePagination-select',

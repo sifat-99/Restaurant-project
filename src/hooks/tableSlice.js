@@ -13,10 +13,10 @@ export const tableSlice = createSlice({
             state.data = action.payload.data;
             state.totalData = action.payload.total;
         },
-        deleteEntry: (state, action) => {
-            state.data = state.data.filter(entry => entry.id !== action.payload);
-            state.totalData--; // Assuming you decrement the totalData count
-        },
+        // deleteEntry: (state, action) => {
+        //     state.data = state.data.filter(entry => entry.id !== action.payload);
+        //     state.totalData--; // Assuming you decrement the totalData count
+        // },
     },
 });
 
@@ -33,16 +33,16 @@ export const fetchData = ({ page, rowsPerPage }) => (dispatch) => {
         });
 };
 
-export const deleteDataEntry = (id) => (dispatch) => {
-    axios
-        .delete(`${ApiCall.baseUrl}Table/delete/${id}`)
-        .then(() => {
-            dispatch(deleteEntry(id));
-        })
-        .catch((err) => {
-            console.error("Error deleting data entry:", err);
-        });
-};
+// export const deleteDataEntry = (id) => (dispatch) => {
+//     axios
+//         .delete(`${ApiCall.baseUrl}Table/delete/${id}`)
+//         .then(() => {
+//             dispatch(deleteEntry(id));
+//         })
+//         .catch((err) => {
+//             console.error("Error deleting data entry:", err);
+//         });
+// };
 
 export const updateCartLengthManually = (length) => (dispatch) => {
     dispatch(setData(length));
