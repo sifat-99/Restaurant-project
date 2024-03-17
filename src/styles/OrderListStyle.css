@@ -13,11 +13,12 @@
 
 .mainOrderTableContainer {
 
-    max-width: 80vw;
+    max-width: 90%;
     margin-left: auto;
     margin-right: auto;
     margin-top: 20px;
     margin-bottom: 40px;
+
 }
 
 
@@ -29,6 +30,8 @@
     display: flex; 
     flex-wrap: nowrap; 
     flex-direction: column;
+    padding: 0 20px;
+    background-color: #ffffff;
 }
 
 .cardWrapper {
@@ -147,7 +150,7 @@
     top: 1rem;
     background-color: white;
     border-width: 2px;
-    width: 88%;
+    width: 100%;
     font-size: 13px;
     font-weight: bold;
     z-index: 100;
@@ -181,7 +184,7 @@
 @media (min-width: 1024px) {
 
     .sectionTableHeader {
-        width: 94%;
+        width: 96%;
 
     }
 
@@ -198,7 +201,7 @@
     }
     .sectionTableHeader
     {
-        width: 95%;
+        width: 96%;
     }
 
     .tableCardContainer {

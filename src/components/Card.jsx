@@ -19,7 +19,7 @@ const CheckCard = ({ menuItem, checked, onChange }) => {
           backgroundColor: "#b71c1c",
         },
         height:"250px",
-        width:"295px",
+        // width:"295px",
         border:"1px solid #b71c1c",
         borderRadius:"10px",
         marginBottom:"20px"
