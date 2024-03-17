@@ -15,10 +15,14 @@ const CheckCard = ({ menuItem, checked, onChange }) => {
       sx={{
         cursor: "pointer",
         backgroundColor: checked ? "#b71c1c" : "white",
-        height: "auto",
         ":hover": {
           backgroundColor: "#b71c1c",
         },
+        height:"250px",
+        width:"295px",
+        border:"1px solid #b71c1c",
+        borderRadius:"10px",
+        marginBottom:"20px"
       }}
     >
       <CardContent
@@ -27,7 +31,7 @@ const CheckCard = ({ menuItem, checked, onChange }) => {
           flexDirection: "column",
           alignContent: "center",
           alignItems: "center",
-          gap: "16px",
+          gap: "20px",
         }}
       >
         <img

@@ -10,7 +10,7 @@ import useTable from "../hooks/useTable.jsx";
 import CheckCard from "./Card.jsx";
 import Button from "@mui/material/Button";
 import NewReleasesIcon from "@mui/icons-material/NewReleases";
-import {  addItem, clearCart, selectCart,setTableId } from "../hooks/cartSlice";
+import { addItem, clearCart, selectCart, setTableId } from "../hooks/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const OrderList = () => {
@@ -22,8 +22,6 @@ const OrderList = () => {
   const [checkedCard, setCheckedCard] = useState(null);
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCart);
-
-
 
   const handleCheckChange = (id) => {
     setCheckedCard(id === checkedCard ? null : id);
@@ -100,7 +98,7 @@ const OrderList = () => {
     } else {
       console.log("Cart is empty");
     }
-    const data ={
+    const data = {
       id: newData.id,
       name: newData.name,
       price: newData.price,
@@ -108,14 +106,13 @@ const OrderList = () => {
       image: newData.image,
       description: newData.description,
       quantity: 1,
-    }
-    console.log(data)
+    };
+    console.log(data);
     dispatch(addItem(data));
   };
   dispatch(setTableId(checkedCard));
 
-
-  console.log(cartItems)
+  console.log(cartItems);
 
   return (
     <>
@@ -133,27 +130,22 @@ const OrderList = () => {
                 SELECT A TABLE ({table.length})
               </div>
               <div className="tableCardContainer">
-                <Card className="tableCardStyle">
-                  {table.map(
-                    (
-                      menuItem,
-                      index // Render only visible cards
-                    ) => (
+                {table.map((menuItem, index) => (
+                  <div className="cardWrapper" key={index}>
+                    <Card className="tableCardStyle">
                       <CheckCard
-                        key={index}
                         menuItem={menuItem}
                         menuImage={menuItem.image}
                         checked={menuItem.id === checkedCard}
                         onChange={handleCheckChange}
                       />
-                    )
-                  )}
-                </Card>
+                    </Card>
+                  </div>
+                ))}
               </div>
             </Grid>
             {checkedCard ? (
               <Grid item xs={12} sm={9}>
-                
                 <Container className="relative">
                   <Card className="foodMainCardStyle">
                     <div className="sectionFoodHeader">
@@ -162,7 +154,6 @@ const OrderList = () => {
                     <div className="mt-12 ">
                       {menuData.map((menuItem) => (
                         <Card
-                        
                           key={menuItem.id}
                           className="foodCardStyle"
                           onMouseEnter={(e) => {
@@ -172,8 +163,8 @@ const OrderList = () => {
                             e.currentTarget.style.borderColor = "transparent";
                           }}
                         >
-                          <CardContent >
-                            <Grid  container spacing={2}>
+                          <CardContent>
+                            <Grid container spacing={2}>
                               <Grid item xs={12} sm={3}>
                                 <img
                                   src={`https://restaurantapi.bssoln.com/images/food/${menuItem?.image}`}
@@ -183,7 +174,8 @@ const OrderList = () => {
                               </Grid>
                               <Grid
                                 item
-                                xs={12} sm={9}
+                                xs={12}
+                                sm={9}
                                 className="foodDetailsGrid"
                               >
                                 <Typography
@@ -206,23 +198,22 @@ const OrderList = () => {
                                       Price: {menuItem.price}
                                     </Typography>
                                     <div className="flex justify-between">
-                                      <Typography
-                                        className="foodDiscountPriceTypography"
-                                      >
+                                      <Typography className="foodDiscountPriceTypography">
                                         Discounted Price:{" "}
                                         <span style={{ fontWeight: "800" }}>
                                           {menuItem.discountPrice}৳
                                         </span>
                                       </Typography>
-                                      
+
                                       <Button
                                         variant="contained"
                                         style={{
-                                          backgroundColor: cartItems?.items.some(
-                                            (item) => item.id === menuItem.id
-                                          )
-                                            ? "#080000"
-                                            : "#CC080B",
+                                          backgroundColor:
+                                            cartItems?.items.some(
+                                              (item) => item.id === menuItem.id
+                                            )
+                                              ? "#080000"
+                                              : "#CC080B",
                                           color: "white",
                                           fontWeight: "bold",
                                         }}
@@ -279,9 +270,7 @@ const OrderList = () => {
             ) : (
               <Grid item xs={12} sm={9}>
                 <div className="relative h">
-                  <Container
-                   className="notificationStyle"
-                  >
+                  <Container className="notificationStyle">
                     <NewReleasesIcon sx={{ fontSize: 70, color: "#b71c1c" }} />
                     <Typography sx={{ fontSize: "24px", fontWeight: "bold" }}>
                       At First Select A Table!

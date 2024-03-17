@@ -114,7 +114,7 @@ export default function Dashboard() {
       <div>
         <Box sx={{ display: "flex", overflow: "auto" }}>
           <CssBaseline />
-          <AppBar position="fixed"  style={{ zIndex: 9999999, paddingLeft: isScreenSmall?"":drawerWidth }} >
+          <AppBar position="fixed"  style={{ zIndex: 9999999, paddingLeft: isScreenSmall?"0px":drawerWidth,}} >
             <Toolbar className="toolBarStyle">
               <div className="appBar-logo-container">
                 <img
@@ -145,15 +145,16 @@ export default function Dashboard() {
 
           <Drawer
             sx={{
-              width: drawerWidth,
+              width: isScreenSmall?"0px":drawerWidth,
               // flexShrink: 0,
               "& .MuiDrawer-paper": {
-                width: drawerWidth,
+                width: isScreenSmall?"0px":drawerWidth,
                 boxSizing: "border-box",
               },
               zIndex: 99999999,
               position: "sticky",
               top: 0,
+              marginLeft:isScreenSmall?`${drawerWidth}px`:'0px',
             }}
             variant="persistent"
             anchor="left"
